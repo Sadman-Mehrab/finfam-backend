@@ -17,8 +17,8 @@ export const comparePasswords = async (
   return isValid;
 };
 
-export const generateJWT = (user: IUser) => {
-  const token = jwt.sign(
+export const generateJWT = async (user: any) => {
+  const token = await jwt.sign(
     { _id: user._id, userName: user.userName },
     config.JWT_SECRET,
     {

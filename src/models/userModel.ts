@@ -1,4 +1,4 @@
-import { Schema, model } from "mongoose";
+import { Schema, model, Types } from "mongoose";
 
 const userSchema = new Schema(
   {
@@ -16,6 +16,18 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
+    families: [
+      {
+        type: Types.ObjectId,
+        ref: "Family",
+      },
+    ],
+    contributions: [
+      {
+        type: Types.ObjectId,
+        ref: "Contribution",
+      },
+    ],
   },
   { timestamps: true }
 );

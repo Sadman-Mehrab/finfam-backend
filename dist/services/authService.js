@@ -47,11 +47,11 @@ const comparePasswords = (password, hashedPassword) => __awaiter(void 0, void 0,
     return isValid;
 });
 exports.comparePasswords = comparePasswords;
-const generateJWT = (user) => {
-    const token = jwt.sign({ _id: user._id, userName: user.userName }, config_1.config.JWT_SECRET, {
+const generateJWT = (user) => __awaiter(void 0, void 0, void 0, function* () {
+    const token = yield jwt.sign({ _id: user._id, userName: user.userName }, config_1.config.JWT_SECRET, {
         expiresIn: 3600,
     });
     return token;
-};
+});
 exports.generateJWT = generateJWT;
-//# sourceMappingURL=auth.js.map
+//# sourceMappingURL=authService.js.map

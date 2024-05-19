@@ -1,22 +1,10 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
+const userController_1 = require("../controllers/userController");
 const userRouter = (0, express_1.Router)();
 // TODO DOCS
-userRouter.post("/sign-up", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    res.json({ message: "SIGNUP" });
-}));
-userRouter.post("/sign-in", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    res.json({ message: "SIGNIN" });
-}));
+userRouter.post("/sign-up", userController_1.signup);
+userRouter.post("/sign-in", userController_1.signin);
 exports.default = userRouter;
 //# sourceMappingURL=userRouter.js.map
