@@ -15,8 +15,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const morgan_1 = __importDefault(require("morgan"));
 const mongoose_1 = __importDefault(require("mongoose"));
-const userRouter_1 = __importDefault(require("./routes/userRouter"));
 const config_1 = require("./config/config");
+const userRouter_1 = __importDefault(require("./routes/userRouter"));
+const familyRouter_1 = __importDefault(require("./routes/familyRouter"));
+const goalRouter_1 = __importDefault(require("./routes/goalRouter"));
 // setup
 const app = (0, express_1.default)();
 // middleware
@@ -28,7 +30,9 @@ app.get("/", (req, res) => {
     res.status(200).json({ message: "Hello World!" });
 });
 app.use("/api/users/", userRouter_1.default);
-// TODO: Refactoring Server Startup
+app.use("/api/families/", familyRouter_1.default);
+app.use("/api/goals/", goalRouter_1.default);
+// server startup
 function startServer() {
     return __awaiter(this, void 0, void 0, function* () {
         try {

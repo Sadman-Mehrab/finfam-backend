@@ -36,6 +36,7 @@ const signup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         res.status(201).json(user);
     }
     catch (error) {
+        console.error(error);
         res.status(400).json({ message: error.message });
     }
 });
@@ -46,7 +47,6 @@ const signin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const userDoc = yield userModel_1.UserModel.findOne({ userName: userName });
         const user = userDoc.toObject();
         const isPasswordValid = yield (0, authService_1.comparePasswords)(password, user.password);
-        console.log(isPasswordValid);
         if (!isPasswordValid) {
             return res.status(401).json({ message: "Invalid Password" });
         }
@@ -55,6 +55,7 @@ const signin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         res.status(200).json(response);
     }
     catch (error) {
+        console.error(error);
         res.status(404).json({ message: "User Not Found" });
     }
 });

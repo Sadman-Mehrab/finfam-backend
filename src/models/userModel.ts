@@ -28,6 +28,12 @@ const userSchema = new Schema(
         ref: "Contribution",
       },
     ],
+    goals: [
+      {
+        type: Types.ObjectId,
+        ref: "Goal",
+      },
+    ],
   },
   { timestamps: true }
 );

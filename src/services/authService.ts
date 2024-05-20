@@ -22,7 +22,7 @@ export const generateJWT = async (user: any) => {
     { _id: user._id, userName: user.userName },
     config.JWT_SECRET,
     {
-      expiresIn: 3600,
+      expiresIn: "1d",
     }
   );
   return token;

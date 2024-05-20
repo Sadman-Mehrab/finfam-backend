@@ -49,7 +49,7 @@ const comparePasswords = (password, hashedPassword) => __awaiter(void 0, void 0,
 exports.comparePasswords = comparePasswords;
 const generateJWT = (user) => __awaiter(void 0, void 0, void 0, function* () {
     const token = yield jwt.sign({ _id: user._id, userName: user.userName }, config_1.config.JWT_SECRET, {
-        expiresIn: 3600,
+        expiresIn: "1d",
     });
     return token;
 });
