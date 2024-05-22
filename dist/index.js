@@ -13,15 +13,19 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
+const cors_1 = __importDefault(require("cors"));
 const morgan_1 = __importDefault(require("morgan"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const config_1 = require("./config/config");
 const userRouter_1 = __importDefault(require("./routes/userRouter"));
 const familyRouter_1 = __importDefault(require("./routes/familyRouter"));
 const goalRouter_1 = __importDefault(require("./routes/goalRouter"));
+const contributionRouter_1 = __importDefault(require("./routes/contributionRouter"));
 // setup
 const app = (0, express_1.default)();
+app.disable('etag');
 // middleware
+app.use((0, cors_1.default)());
 app.use((0, morgan_1.default)("dev"));
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
@@ -32,6 +36,7 @@ app.get("/", (req, res) => {
 app.use("/api/users/", userRouter_1.default);
 app.use("/api/families/", familyRouter_1.default);
 app.use("/api/goals/", goalRouter_1.default);
+app.use("/api/contributions/", contributionRouter_1.default);
 // server startup
 function startServer() {
     return __awaiter(this, void 0, void 0, function* () {

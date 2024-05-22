@@ -8,9 +8,9 @@ const contributionSchema = new mongoose_1.Schema({
         ref: "User",
         required: true,
     },
-    family: {
+    goal: {
         type: mongoose_1.Types.ObjectId,
-        ref: "Family",
+        ref: "Goal",
         required: true,
     },
     amount: {

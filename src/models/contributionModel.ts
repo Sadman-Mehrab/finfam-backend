@@ -7,9 +7,9 @@ const contributionSchema = new Schema(
       ref: "User",
       required: true,
     },
-    family: {
+    goal: {
       type: Types.ObjectId,
-      ref: "Family",
+      ref: "Goal",
       required: true,
     },
     amount: {

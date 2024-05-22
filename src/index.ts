@@ -1,15 +1,19 @@
 import express, { NextFunction, Request, Response } from "express";
+import cors from "cors";
 import morgan from "morgan";
 import mongoose from "mongoose";
 import { config } from "./config/config";
 import userRouter from "./routes/userRouter";
 import familyRouter from "./routes/familyRouter";
 import goalRouter from "./routes/goalRouter";
+import contributionRouter from "./routes/contributionRouter";
 
 // setup
 const app = express();
+app.disable('etag');
 
 // middleware
+app.use(cors());
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -21,6 +25,7 @@ app.get("/", (req, res) => {
 app.use("/api/users/", userRouter);
 app.use("/api/families/", familyRouter);
 app.use("/api/goals/", goalRouter);
+app.use("/api/contributions/", contributionRouter);
 
 // server startup
 async function startServer() {

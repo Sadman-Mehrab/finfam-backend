@@ -20,7 +20,7 @@ var __rest = (this && this.__rest) || function (s, e) {
     return t;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.signin = exports.signup = void 0;
+exports.getCurrentUser = exports.signin = exports.signup = void 0;
 const authService_1 = require("../services/authService");
 const userModel_1 = require("../models/userModel");
 const signup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -60,4 +60,18 @@ const signin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.signin = signin;
+const getCurrentUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    // @ts-ignore
+    const user = req.user;
+    try {
+        const userDoc = yield userModel_1.UserModel.findOne({ _id: user._id });
+        const _b = userDoc.toObject(), { password } = _b, response = __rest(_b, ["password"]);
+        res.status(200).json(response);
+    }
+    catch (error) {
+        console.error(error);
+        res.status(404).json({ message: "User Not Found" });
+    }
+});
+exports.getCurrentUser = getCurrentUser;
 //# sourceMappingURL=userController.js.map
