@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getGoalProgress = exports.getGoal = exports.getFamilyGoals = exports.getUserGoals = exports.createGoal = void 0;
+exports.getGoalProgress = exports.getGoal = exports.getFamilyGoals = exports.getUserGoals = exports.deleteGoal = exports.createGoal = void 0;
 const mongoose_1 = require("mongoose");
 const goalModel_1 = require("../models/goalModel");
 const userModel_1 = require("../models/userModel");
@@ -42,14 +42,29 @@ const createGoal = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
     catch (error) {
         yield session.abortTransaction();
-        console.error(error);
-        res.status(400).json({ message: error.message });
+        console.log(error);
+        res.status(500).json({ message: error.message });
     }
     finally {
         session.endSession();
     }
 });
 exports.createGoal = createGoal;
+const deleteGoal = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    // @ts-ignore
+    const user = req.user;
+    const goalId = req.params.goalId;
+    try {
+        const goal = yield goalModel_1.GoalModel.findById(goalId);
+        yield goalModel_1.GoalModel.findByIdAndDelete(goalId);
+        res.status(200).json({ message: "Goal deleted successfully" });
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({ message: error.message });
+    }
+});
+exports.deleteGoal = deleteGoal;
 const getUserGoals = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     // @ts-ignore
     const user = req.user;
@@ -58,8 +73,8 @@ const getUserGoals = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         res.status(200).json(goalDoc);
     }
     catch (error) {
-        console.error(error);
-        res.status(400).json({ message: error.message });
+        console.log(error);
+        res.status(500).json({ message: error.message });
     }
 });
 exports.getUserGoals = getUserGoals;
@@ -70,8 +85,8 @@ const getFamilyGoals = (req, res) => __awaiter(void 0, void 0, void 0, function*
         res.status(200).json(goalDoc);
     }
     catch (error) {
-        console.error(error);
-        res.status(400).json({ message: error.message });
+        console.log(error);
+        res.status(500).json({ message: error.message });
     }
 });
 exports.getFamilyGoals = getFamilyGoals;
@@ -84,7 +99,7 @@ const getGoal = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         res.status(200).json(goalDoc);
     }
     catch (error) {
-        console.error(error);
+        console.log(error);
         res.status(404).json({ message: error.message });
     }
 });
@@ -93,9 +108,6 @@ const getGoalProgress = (req, res) => __awaiter(void 0, void 0, void 0, function
     const goalId = req.params.goalId;
     try {
         const goalDoc = yield goalModel_1.GoalModel.findOne({ _id: goalId });
-        if (!goalDoc) {
-            return res.status(404).json({ message: "Goal not found" });
-        }
         const contributions = yield contributionModel_1.ContributionModel.find({ goal: goalId });
         // @ts-ignore
         const totalCompleted = contributions.reduce((sum, contribution) => sum + contribution.amount, 0);
@@ -107,8 +119,8 @@ const getGoalProgress = (req, res) => __awaiter(void 0, void 0, void 0, function
         });
     }
     catch (error) {
-        console.error(error);
-        res.status(400).json({ message: error.message });
+        console.log(error);
+        res.status(500).json({ message: error.message });
     }
 });
 exports.getGoalProgress = getGoalProgress;

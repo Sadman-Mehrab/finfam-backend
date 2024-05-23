@@ -54,8 +54,8 @@ export const createContribution = async (req: Request, res: Response) => {
     res.status(201).json(contribution);
   } catch (error) {
     await session.abortTransaction();
-    console.error(error);
-    res.status(400).json({ message: error.message });
+    console.log(error);
+    res.status(500).json({ message: error.message });
   } finally {
     session.endSession();
   }
@@ -69,7 +69,7 @@ export const getGoalContributions = async (req: Request, res: Response) => {
 
     res.status(200).json(contributionDoc);
   } catch (error) {
-    console.error(error);
-    res.status(400).json({ message: error.message });
+    console.log(error);
+    res.status(500).json({ message: error.message });
   }
 };

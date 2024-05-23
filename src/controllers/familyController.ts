@@ -13,7 +13,16 @@ export const createFamily = async (req: Request, res: Response) => {
   session.startTransaction();
 
   try {
-    const familyDoc = await FamilyModel.create([{ name: name }], { session });
+    const familyDoc = await FamilyModel.create(
+      [
+        {
+          name: name,
+          creator: user._id,
+        },
+      ],
+      { session }
+    );
+
     const family = familyDoc[0].toObject();
 
     const response = await FamilyModel.findByIdAndUpdate(
@@ -35,10 +44,101 @@ export const createFamily = async (req: Request, res: Response) => {
     res.status(201).json(response);
   } catch (error) {
     await session.abortTransaction();
-    console.error(error);
-    res.status(400).json({ message: error.message });
+    console.log(error);
+    res.status(500).json({ message: error.message });
   } finally {
     session.endSession();
+  }
+};
+
+export const leaveFamily = async (req: Request, res: Response) => {
+  // @ts-ignore
+  const user = req.user;
+  const familyId = req.params.familyId;
+
+  const session = await startSession();
+  session.startTransaction();
+
+  try {
+    const family = await FamilyModel.findById(familyId);
+
+    const updatedFamily = await FamilyModel.findByIdAndUpdate(
+      familyId,
+      { $pull: { members: user._id } },
+      { new: true, session }
+    );
+
+    const updatedUser = await UserModel.findByIdAndUpdate(
+      user._id,
+      { $pull: { families: familyId } },
+      { new: true, session }
+    );
+
+    await session.commitTransaction();
+
+    res.status(200).json({ message: "Left family successfully" });
+  } catch (error) {
+    await session.abortTransaction();
+    console.log(error);
+    res.status(500).json({ message: error.message });
+  } finally {
+    session.endSession();
+  }
+};
+
+export const kickMemberFromFamily = async (req: Request, res: Response) => {
+  // @ts-ignore
+  const user = req.user;
+  const familyId = req.params.familyId;
+  const { memberUserName } = req.body;
+
+  const session = await startSession();
+  session.startTransaction();
+
+  try {
+    const family = await FamilyModel.findById(familyId);
+
+
+    const memberToKick = await UserModel.findOne({ userName: memberUserName });
+
+
+    const updatedFamily = await FamilyModel.findByIdAndUpdate(
+      familyId,
+      { $pull: { members: memberToKick._id } },
+      { new: true, session }
+    );
+
+    const updatedUser = await UserModel.findByIdAndUpdate(
+      memberToKick._id,
+      { $pull: { families: familyId } },
+      { new: true, session }
+    );
+
+    await session.commitTransaction();
+
+    res.status(200).json({ message: "Member kicked successfully" });
+  } catch (error) {
+    await session.abortTransaction();
+    console.error(error);
+    res.status(500).json({ message: error.message });
+  } finally {
+    session.endSession();
+  }
+};
+
+export const deleteFamily = async (req: Request, res: Response) => {
+  // @ts-ignore
+  const user = req.user;
+  const familyId = req.params.familyId;
+
+  try {
+    const family = await FamilyModel.findById(familyId);
+
+    await FamilyModel.findByIdAndDelete(familyId);
+    res.status(200).json({ message: "Family deleted successfully" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error.message });
   }
 };
 
@@ -54,8 +154,8 @@ export const getUserFamilies = async (req: Request, res: Response) => {
 
     res.status(200).json(familyDoc);
   } catch (error) {
-    console.error(error);
-    res.status(400).json({ message: error.message });
+    console.log(error);
+    res.status(500).json({ message: error.message });
   }
 };
 
@@ -69,7 +169,7 @@ export const getFamily = async (req: Request, res: Response) => {
 
     res.status(200).json(familyDoc);
   } catch (error) {
-    console.error(error);
+    console.log(error);
     res.status(404).json({ message: error.message });
   }
 };
@@ -102,9 +202,12 @@ export const addMemberToFamily = async (req: Request, res: Response) => {
     res.status(200).json(response);
   } catch (error) {
     await session.abortTransaction();
-    console.error(error);
-    res.status(400).json({ message: error.message });
+    console.log(error);
+    res.status(500).json({ message: error.message });
   } finally {
     session.endSession();
   }
 };
+
+
+

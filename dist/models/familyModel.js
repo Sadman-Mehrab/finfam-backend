@@ -7,6 +7,11 @@ const familySchema = new mongoose_1.Schema({
         type: String,
         required: true,
     },
+    creator: {
+        type: mongoose_1.Types.ObjectId,
+        ref: "User",
+        required: true,
+    },
     members: [
         {
             type: mongoose_1.Types.ObjectId,

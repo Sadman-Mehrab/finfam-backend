@@ -7,6 +7,7 @@ const userRouter = (0, express_1.Router)();
 // TODO DOCS
 userRouter.post("/sign-up", userController_1.signup);
 userRouter.post("/sign-in", userController_1.signin);
+userRouter.get("/:userId", userController_1.getPublicUserById);
 userRouter.get("/currentUser", authMiddleware_1.protectRoute, userController_1.getCurrentUser);
 exports.default = userRouter;
 //# sourceMappingURL=userRouter.js.map

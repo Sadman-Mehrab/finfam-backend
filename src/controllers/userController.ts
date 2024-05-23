@@ -20,7 +20,7 @@ export const signup = async (req: Request, res: Response) => {
 
     res.status(201).json(user);
   } catch (error) {
-    console.error(error);
+    console.log(error);
     res.status(400).json({ message: error.message });
   }
 };
@@ -42,7 +42,7 @@ export const signin = async (req: Request, res: Response) => {
 
     res.status(200).json(response);
   } catch (error) {
-    console.error(error);
+    console.log(error);
     res.status(404).json({ message: "User Not Found" });
   }
 };
@@ -57,7 +57,21 @@ export const getCurrentUser = async (req: Request, res: Response) => {
 
     res.status(200).json(response);
   } catch (error) {
-    console.error(error);
+    console.log(error);
+    res.status(404).json({ message: "User Not Found" });
+  }
+};
+
+export const getPublicUserById = async (req: Request, res: Response) => {
+  const userId = req.params.userId;
+
+  try {
+    const userDoc: any = await UserModel.findOne({ _id: userId });
+    const user = userDoc.toObject();
+
+    res.status(200).json({userName: user.userName});
+  } catch (error) {
+    console.log(error);
     res.status(404).json({ message: "User Not Found" });
   }
 };

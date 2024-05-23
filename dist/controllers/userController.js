@@ -20,7 +20,7 @@ var __rest = (this && this.__rest) || function (s, e) {
     return t;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getCurrentUser = exports.signin = exports.signup = void 0;
+exports.getPublicUserById = exports.getCurrentUser = exports.signin = exports.signup = void 0;
 const authService_1 = require("../services/authService");
 const userModel_1 = require("../models/userModel");
 const signup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -36,7 +36,7 @@ const signup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         res.status(201).json(user);
     }
     catch (error) {
-        console.error(error);
+        console.log(error);
         res.status(400).json({ message: error.message });
     }
 });
@@ -55,7 +55,7 @@ const signin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         res.status(200).json(response);
     }
     catch (error) {
-        console.error(error);
+        console.log(error);
         res.status(404).json({ message: "User Not Found" });
     }
 });
@@ -69,9 +69,22 @@ const getCurrentUser = (req, res) => __awaiter(void 0, void 0, void 0, function*
         res.status(200).json(response);
     }
     catch (error) {
-        console.error(error);
+        console.log(error);
         res.status(404).json({ message: "User Not Found" });
     }
 });
 exports.getCurrentUser = getCurrentUser;
+const getPublicUserById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const userId = req.params.userId;
+    try {
+        const userDoc = yield userModel_1.UserModel.findOne({ _id: userId });
+        const user = userDoc.toObject();
+        res.status(200).json({ userName: user.userName });
+    }
+    catch (error) {
+        console.log(error);
+        res.status(404).json({ message: "User Not Found" });
+    }
+});
+exports.getPublicUserById = getPublicUserById;
 //# sourceMappingURL=userController.js.map

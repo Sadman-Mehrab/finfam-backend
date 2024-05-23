@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.addMemberToFamily = exports.getFamily = exports.getUserFamilies = exports.createFamily = void 0;
+exports.addMemberToFamily = exports.getFamily = exports.getUserFamilies = exports.deleteFamily = exports.kickMemberFromFamily = exports.leaveFamily = exports.createFamily = void 0;
 const mongoose_1 = require("mongoose");
 const familyModel_1 = require("../models/familyModel");
 const userModel_1 = require("../models/userModel");
@@ -20,7 +20,12 @@ const createFamily = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     const session = yield (0, mongoose_1.startSession)();
     session.startTransaction();
     try {
-        const familyDoc = yield familyModel_1.FamilyModel.create([{ name: name }], { session });
+        const familyDoc = yield familyModel_1.FamilyModel.create([
+            {
+                name: name,
+                creator: user._id,
+            },
+        ], { session });
         const family = familyDoc[0].toObject();
         const response = yield familyModel_1.FamilyModel.findByIdAndUpdate(family._id, { $addToSet: { members: user._id } }, { new: true, session });
         const updatedUser = yield userModel_1.UserModel.findByIdAndUpdate(user._id, {
@@ -31,14 +36,77 @@ const createFamily = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     }
     catch (error) {
         yield session.abortTransaction();
-        console.error(error);
-        res.status(400).json({ message: error.message });
+        console.log(error);
+        res.status(500).json({ message: error.message });
     }
     finally {
         session.endSession();
     }
 });
 exports.createFamily = createFamily;
+const leaveFamily = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    // @ts-ignore
+    const user = req.user;
+    const familyId = req.params.familyId;
+    const session = yield (0, mongoose_1.startSession)();
+    session.startTransaction();
+    try {
+        const family = yield familyModel_1.FamilyModel.findById(familyId);
+        const updatedFamily = yield familyModel_1.FamilyModel.findByIdAndUpdate(familyId, { $pull: { members: user._id } }, { new: true, session });
+        const updatedUser = yield userModel_1.UserModel.findByIdAndUpdate(user._id, { $pull: { families: familyId } }, { new: true, session });
+        yield session.commitTransaction();
+        res.status(200).json({ message: "Left family successfully" });
+    }
+    catch (error) {
+        yield session.abortTransaction();
+        console.log(error);
+        res.status(500).json({ message: error.message });
+    }
+    finally {
+        session.endSession();
+    }
+});
+exports.leaveFamily = leaveFamily;
+const kickMemberFromFamily = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    // @ts-ignore
+    const user = req.user;
+    const familyId = req.params.familyId;
+    const { memberUserName } = req.body;
+    const session = yield (0, mongoose_1.startSession)();
+    session.startTransaction();
+    try {
+        const family = yield familyModel_1.FamilyModel.findById(familyId);
+        const memberToKick = yield userModel_1.UserModel.findOne({ userName: memberUserName });
+        const updatedFamily = yield familyModel_1.FamilyModel.findByIdAndUpdate(familyId, { $pull: { members: memberToKick._id } }, { new: true, session });
+        const updatedUser = yield userModel_1.UserModel.findByIdAndUpdate(memberToKick._id, { $pull: { families: familyId } }, { new: true, session });
+        yield session.commitTransaction();
+        res.status(200).json({ message: "Member kicked successfully" });
+    }
+    catch (error) {
+        yield session.abortTransaction();
+        console.error(error);
+        res.status(500).json({ message: error.message });
+    }
+    finally {
+        session.endSession();
+    }
+});
+exports.kickMemberFromFamily = kickMemberFromFamily;
+const deleteFamily = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    // @ts-ignore
+    const user = req.user;
+    const familyId = req.params.familyId;
+    try {
+        const family = yield familyModel_1.FamilyModel.findById(familyId);
+        yield familyModel_1.FamilyModel.findByIdAndDelete(familyId);
+        res.status(200).json({ message: "Family deleted successfully" });
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({ message: error.message });
+    }
+});
+exports.deleteFamily = deleteFamily;
 const getUserFamilies = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     // @ts-ignore
     const user = req.user;
@@ -47,8 +115,8 @@ const getUserFamilies = (req, res) => __awaiter(void 0, void 0, void 0, function
         res.status(200).json(familyDoc);
     }
     catch (error) {
-        console.error(error);
-        res.status(400).json({ message: error.message });
+        console.log(error);
+        res.status(500).json({ message: error.message });
     }
 });
 exports.getUserFamilies = getUserFamilies;
@@ -59,7 +127,7 @@ const getFamily = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         res.status(200).json(familyDoc);
     }
     catch (error) {
-        console.error(error);
+        console.log(error);
         res.status(404).json({ message: error.message });
     }
 });
@@ -80,8 +148,8 @@ const addMemberToFamily = (req, res) => __awaiter(void 0, void 0, void 0, functi
     }
     catch (error) {
         yield session.abortTransaction();
-        console.error(error);
-        res.status(400).json({ message: error.message });
+        console.log(error);
+        res.status(500).json({ message: error.message });
     }
     finally {
         session.endSession();

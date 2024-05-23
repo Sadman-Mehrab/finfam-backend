@@ -51,12 +51,31 @@ export const createGoal = async (req: Request, res: Response) => {
     res.status(201).json(goal);
   } catch (error) {
     await session.abortTransaction();
-    console.error(error);
-    res.status(400).json({ message: error.message });
+    console.log(error);
+    res.status(500).json({ message: error.message });
   } finally {
     session.endSession();
   }
 };
+
+export const deleteGoal = async (req: Request, res: Response) => {
+  // @ts-ignore
+  const user = req.user;
+  const goalId = req.params.goalId;
+
+  try {
+    const goal = await GoalModel.findById(goalId);
+
+    await GoalModel.findByIdAndDelete(goalId);
+
+
+    res.status(200).json({ message: "Goal deleted successfully" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
 
 export const getUserGoals = async (req: Request, res: Response) => {
   // @ts-ignore
@@ -67,8 +86,8 @@ export const getUserGoals = async (req: Request, res: Response) => {
 
     res.status(200).json(goalDoc);
   } catch (error) {
-    console.error(error);
-    res.status(400).json({ message: error.message });
+    console.log(error);
+    res.status(500).json({ message: error.message });
   }
 };
 
@@ -83,8 +102,8 @@ export const getFamilyGoals = async (req: Request, res: Response) => {
 
     res.status(200).json(goalDoc);
   } catch (error) {
-    console.error(error);
-    res.status(400).json({ message: error.message });
+    console.log(error);
+    res.status(500).json({ message: error.message });
   }
 };
 
@@ -97,7 +116,7 @@ export const getGoal = async (req: Request, res: Response) => {
 
     res.status(200).json(goalDoc);
   } catch (error) {
-    console.error(error);
+    console.log(error);
     res.status(404).json({ message: error.message });
   }
 };
@@ -107,9 +126,6 @@ export const getGoalProgress = async (req: Request, res: Response) => {
 
   try {
     const goalDoc = await GoalModel.findOne({ _id: goalId });
-    if (!goalDoc) {
-      return res.status(404).json({ message: "Goal not found" });
-    }
 
     const contributions = await ContributionModel.find({ goal: goalId });
     // @ts-ignore
@@ -125,7 +141,7 @@ export const getGoalProgress = async (req: Request, res: Response) => {
         totalCompleted: totalCompleted,
       });
   } catch (error) {
-    console.error(error);
-    res.status(400).json({ message: error.message });
+    console.log(error);
+    res.status(500).json({ message: error.message });
   }
 };

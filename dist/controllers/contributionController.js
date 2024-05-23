@@ -48,8 +48,8 @@ const createContribution = (req, res) => __awaiter(void 0, void 0, void 0, funct
     }
     catch (error) {
         yield session.abortTransaction();
-        console.error(error);
-        res.status(400).json({ message: error.message });
+        console.log(error);
+        res.status(500).json({ message: error.message });
     }
     finally {
         session.endSession();
@@ -63,8 +63,8 @@ const getGoalContributions = (req, res) => __awaiter(void 0, void 0, void 0, fun
         res.status(200).json(contributionDoc);
     }
     catch (error) {
-        console.error(error);
-        res.status(400).json({ message: error.message });
+        console.log(error);
+        res.status(500).json({ message: error.message });
     }
 });
 exports.getGoalContributions = getGoalContributions;

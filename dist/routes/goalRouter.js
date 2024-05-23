@@ -8,6 +8,7 @@ const goalRouter = (0, express_1.Router)();
 goalRouter.post("/", authMiddleware_1.protectRoute, goalController_1.createGoal);
 goalRouter.get("/", authMiddleware_1.protectRoute, goalController_1.getUserGoals);
 goalRouter.get("/:goalId", authMiddleware_1.protectRoute, goalController_1.getGoal);
+goalRouter.delete("/:goalId", authMiddleware_1.protectRoute, goalController_1.deleteGoal);
 goalRouter.get("/progress/:goalId", authMiddleware_1.protectRoute, goalController_1.getGoalProgress);
 goalRouter.get("/family/:familyId", authMiddleware_1.protectRoute, goalController_1.getFamilyGoals);
 exports.default = goalRouter;

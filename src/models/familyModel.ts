@@ -6,6 +6,11 @@ const familySchema = new Schema(
       type: String,
       required: true,
     },
+    creator: {
+      type: Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
     members: [
       {
         type: Types.ObjectId,
