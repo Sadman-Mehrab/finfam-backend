@@ -11,8 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.addMemberToFamily = exports.getFamily = exports.getUserFamilies = exports.deleteFamily = exports.kickMemberFromFamily = exports.leaveFamily = exports.createFamily = void 0;
 const mongoose_1 = require("mongoose");
-const familyModel_1 = require("../models/familyModel");
-const userModel_1 = require("../models/userModel");
+const models_1 = require("../models/");
 const createFamily = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     // @ts-ignore
     const user = req.user;
@@ -20,15 +19,15 @@ const createFamily = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     const session = yield (0, mongoose_1.startSession)();
     session.startTransaction();
     try {
-        const familyDoc = yield familyModel_1.FamilyModel.create([
+        const familyDoc = yield models_1.FamilyModel.create([
             {
                 name: name,
                 creator: user._id,
             },
         ], { session });
         const family = familyDoc[0].toObject();
-        const response = yield familyModel_1.FamilyModel.findByIdAndUpdate(family._id, { $addToSet: { members: user._id } }, { new: true, session });
-        const updatedUser = yield userModel_1.UserModel.findByIdAndUpdate(user._id, {
+        const response = yield models_1.FamilyModel.findByIdAndUpdate(family._id, { $addToSet: { members: user._id } }, { new: true, session });
+        const updatedUser = yield models_1.UserModel.findByIdAndUpdate(user._id, {
             $addToSet: { families: family._id },
         }, { session });
         yield session.commitTransaction();
@@ -51,9 +50,9 @@ const leaveFamily = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     const session = yield (0, mongoose_1.startSession)();
     session.startTransaction();
     try {
-        const family = yield familyModel_1.FamilyModel.findById(familyId);
-        const updatedFamily = yield familyModel_1.FamilyModel.findByIdAndUpdate(familyId, { $pull: { members: user._id } }, { new: true, session });
-        const updatedUser = yield userModel_1.UserModel.findByIdAndUpdate(user._id, { $pull: { families: familyId } }, { new: true, session });
+        const family = yield models_1.FamilyModel.findById(familyId);
+        const updatedFamily = yield models_1.FamilyModel.findByIdAndUpdate(familyId, { $pull: { members: user._id } }, { new: true, session });
+        const updatedUser = yield models_1.UserModel.findByIdAndUpdate(user._id, { $pull: { families: familyId } }, { new: true, session });
         yield session.commitTransaction();
         res.status(200).json({ message: "Left family successfully" });
     }
@@ -75,10 +74,10 @@ const kickMemberFromFamily = (req, res) => __awaiter(void 0, void 0, void 0, fun
     const session = yield (0, mongoose_1.startSession)();
     session.startTransaction();
     try {
-        const family = yield familyModel_1.FamilyModel.findById(familyId);
-        const memberToKick = yield userModel_1.UserModel.findOne({ userName: memberUserName });
-        const updatedFamily = yield familyModel_1.FamilyModel.findByIdAndUpdate(familyId, { $pull: { members: memberToKick._id } }, { new: true, session });
-        const updatedUser = yield userModel_1.UserModel.findByIdAndUpdate(memberToKick._id, { $pull: { families: familyId } }, { new: true, session });
+        const family = yield models_1.FamilyModel.findById(familyId);
+        const memberToKick = yield models_1.UserModel.findOne({ userName: memberUserName });
+        const updatedFamily = yield models_1.FamilyModel.findByIdAndUpdate(familyId, { $pull: { members: memberToKick._id } }, { new: true, session });
+        const updatedUser = yield models_1.UserModel.findByIdAndUpdate(memberToKick._id, { $pull: { families: familyId } }, { new: true, session });
         yield session.commitTransaction();
         res.status(200).json({ message: "Member kicked successfully" });
     }
@@ -97,8 +96,8 @@ const deleteFamily = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     const user = req.user;
     const familyId = req.params.familyId;
     try {
-        const family = yield familyModel_1.FamilyModel.findById(familyId);
-        yield familyModel_1.FamilyModel.findByIdAndDelete(familyId);
+        const family = yield models_1.FamilyModel.findById(familyId);
+        yield models_1.FamilyModel.findByIdAndDelete(familyId);
         res.status(200).json({ message: "Family deleted successfully" });
     }
     catch (error) {
@@ -111,7 +110,7 @@ const getUserFamilies = (req, res) => __awaiter(void 0, void 0, void 0, function
     // @ts-ignore
     const user = req.user;
     try {
-        const familyDoc = yield familyModel_1.FamilyModel.find({ members: user._id }).populate("members", "userName");
+        const familyDoc = yield models_1.FamilyModel.find({ members: user._id }).populate("members", "userName");
         res.status(200).json(familyDoc);
     }
     catch (error) {
@@ -123,7 +122,7 @@ exports.getUserFamilies = getUserFamilies;
 const getFamily = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const familyId = req.params.familyId;
     try {
-        const familyDoc = yield familyModel_1.FamilyModel.findOne({ _id: familyId }).populate("members", "userName");
+        const familyDoc = yield models_1.FamilyModel.findOne({ _id: familyId }).populate("members", "userName");
         res.status(200).json(familyDoc);
     }
     catch (error) {
@@ -138,9 +137,9 @@ const addMemberToFamily = (req, res) => __awaiter(void 0, void 0, void 0, functi
     const session = yield (0, mongoose_1.startSession)();
     session.startTransaction();
     try {
-        const memberUser = yield userModel_1.UserModel.findOne({ userName: memberUserName });
-        const response = yield familyModel_1.FamilyModel.findByIdAndUpdate(familyId, { $addToSet: { members: memberUser._id } }, { new: true, session });
-        const updatedUser = yield userModel_1.UserModel.findByIdAndUpdate(memberUser._id, {
+        const memberUser = yield models_1.UserModel.findOne({ userName: memberUserName });
+        const response = yield models_1.FamilyModel.findByIdAndUpdate(familyId, { $addToSet: { members: memberUser._id } }, { new: true, session });
+        const updatedUser = yield models_1.UserModel.findByIdAndUpdate(memberUser._id, {
             $addToSet: { families: familyId },
         }, { session });
         yield session.commitTransaction();

@@ -1,7 +1,6 @@
 import * as bcrypt from "bcrypt";
 import * as jwt from "jsonwebtoken";
 import { config } from "../config/config";
-import { IUser } from "../types/user";
 
 export const hashPassword = async (password: string) => {
   const salt = await bcrypt.genSalt();

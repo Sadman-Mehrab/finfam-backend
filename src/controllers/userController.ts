@@ -4,7 +4,7 @@ import {
   generateJWT,
   hashPassword,
 } from "../services/authService";
-import { UserModel } from "../models/userModel";
+import { UserModel } from "../models/";
 
 export const signup = async (req: Request, res: Response) => {
   const { userName, email, password } = req.body;
@@ -69,7 +69,7 @@ export const getPublicUserById = async (req: Request, res: Response) => {
     const userDoc: any = await UserModel.findOne({ _id: userId });
     const user = userDoc.toObject();
 
-    res.status(200).json({userName: user.userName});
+    res.status(200).json({ userName: user.userName });
   } catch (error) {
     console.log(error);
     res.status(404).json({ message: "User Not Found" });

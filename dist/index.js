@@ -17,13 +17,10 @@ const cors_1 = __importDefault(require("cors"));
 const morgan_1 = __importDefault(require("morgan"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const config_1 = require("./config/config");
-const userRouter_1 = __importDefault(require("./routes/userRouter"));
-const familyRouter_1 = __importDefault(require("./routes/familyRouter"));
-const goalRouter_1 = __importDefault(require("./routes/goalRouter"));
-const contributionRouter_1 = __importDefault(require("./routes/contributionRouter"));
+const routes_1 = require("./routes");
 // setup
 const app = (0, express_1.default)();
-app.disable('etag');
+app.disable("etag");
 // middleware
 app.use((0, cors_1.default)());
 app.use((0, morgan_1.default)("dev"));
@@ -33,10 +30,10 @@ app.use(express_1.default.urlencoded({ extended: true }));
 app.get("/", (req, res) => {
     res.status(200).json({ message: "Hello World!" });
 });
-app.use("/api/users/", userRouter_1.default);
-app.use("/api/families/", familyRouter_1.default);
-app.use("/api/goals/", goalRouter_1.default);
-app.use("/api/contributions/", contributionRouter_1.default);
+app.use("/api/users/", routes_1.userRouter);
+app.use("/api/families/", routes_1.familyRouter);
+app.use("/api/goals/", routes_1.goalRouter);
+app.use("/api/contributions/", routes_1.contributionRouter);
 // server startup
 function startServer() {
     return __awaiter(this, void 0, void 0, function* () {

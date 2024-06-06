@@ -3,14 +3,16 @@ import cors from "cors";
 import morgan from "morgan";
 import mongoose from "mongoose";
 import { config } from "./config/config";
-import userRouter from "./routes/userRouter";
-import familyRouter from "./routes/familyRouter";
-import goalRouter from "./routes/goalRouter";
-import contributionRouter from "./routes/contributionRouter";
+import {
+  userRouter,
+  familyRouter,
+  goalRouter,
+  contributionRouter,
+} from "./routes";
 
 // setup
 const app = express();
-app.disable('etag');
+app.disable("etag");
 
 // middleware
 app.use(cors());

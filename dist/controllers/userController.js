@@ -22,12 +22,12 @@ var __rest = (this && this.__rest) || function (s, e) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getPublicUserById = exports.getCurrentUser = exports.signin = exports.signup = void 0;
 const authService_1 = require("../services/authService");
-const userModel_1 = require("../models/userModel");
+const models_1 = require("../models/");
 const signup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { userName, email, password } = req.body;
     const hashedPassword = yield (0, authService_1.hashPassword)(password);
     try {
-        const userDoc = yield userModel_1.UserModel.create({
+        const userDoc = yield models_1.UserModel.create({
             userName,
             email,
             password: hashedPassword,
@@ -44,7 +44,7 @@ exports.signup = signup;
 const signin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { userName, password } = req.body;
     try {
-        const userDoc = yield userModel_1.UserModel.findOne({ userName: userName });
+        const userDoc = yield models_1.UserModel.findOne({ userName: userName });
         const user = userDoc.toObject();
         const isPasswordValid = yield (0, authService_1.comparePasswords)(password, user.password);
         if (!isPasswordValid) {
@@ -64,7 +64,7 @@ const getCurrentUser = (req, res) => __awaiter(void 0, void 0, void 0, function*
     // @ts-ignore
     const user = req.user;
     try {
-        const userDoc = yield userModel_1.UserModel.findOne({ _id: user._id });
+        const userDoc = yield models_1.UserModel.findOne({ _id: user._id });
         const _b = userDoc.toObject(), { password } = _b, response = __rest(_b, ["password"]);
         res.status(200).json(response);
     }
@@ -77,7 +77,7 @@ exports.getCurrentUser = getCurrentUser;
 const getPublicUserById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const userId = req.params.userId;
     try {
-        const userDoc = yield userModel_1.UserModel.findOne({ _id: userId });
+        const userDoc = yield models_1.UserModel.findOne({ _id: userId });
         const user = userDoc.toObject();
         res.status(200).json({ userName: user.userName });
     }

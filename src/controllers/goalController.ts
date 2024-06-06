@@ -1,10 +1,12 @@
 import express, { NextFunction, Request, Response } from "express";
 import { Types } from "mongoose";
 import { startSession } from "mongoose";
-import { GoalModel } from "../models/goalModel";
-import { UserModel } from "../models/userModel";
-import { FamilyModel } from "../models/familyModel";
-import { ContributionModel } from "../models/contributionModel";
+import {
+  UserModel,
+  FamilyModel,
+  ContributionModel,
+  GoalModel,
+} from "../models/";
 
 export const createGoal = async (req: Request, res: Response) => {
   // @ts-ignore
@@ -68,14 +70,12 @@ export const deleteGoal = async (req: Request, res: Response) => {
 
     await GoalModel.findByIdAndDelete(goalId);
 
-
     res.status(200).json({ message: "Goal deleted successfully" });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: error.message });
   }
 };
-
 
 export const getUserGoals = async (req: Request, res: Response) => {
   // @ts-ignore
@@ -134,12 +134,10 @@ export const getGoalProgress = async (req: Request, res: Response) => {
       0
     );
 
-    res
-      .status(200)
-      .json({
-        totalAmount: goalDoc.totalAmount,
-        totalCompleted: totalCompleted,
-      });
+    res.status(200).json({
+      totalAmount: goalDoc.totalAmount,
+      totalCompleted: totalCompleted,
+    });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: error.message });

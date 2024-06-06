@@ -1,7 +1,6 @@
 import express, { NextFunction, Request, Response } from "express";
 import { startSession } from "mongoose";
-import { FamilyModel } from "../models/familyModel";
-import { UserModel } from "../models/userModel";
+import { FamilyModel, UserModel } from "../models/";
 
 export const createFamily = async (req: Request, res: Response) => {
   // @ts-ignore
@@ -98,9 +97,7 @@ export const kickMemberFromFamily = async (req: Request, res: Response) => {
   try {
     const family = await FamilyModel.findById(familyId);
 
-
     const memberToKick = await UserModel.findOne({ userName: memberUserName });
-
 
     const updatedFamily = await FamilyModel.findByIdAndUpdate(
       familyId,
@@ -208,6 +205,3 @@ export const addMemberToFamily = async (req: Request, res: Response) => {
     session.endSession();
   }
 };
-
-
-

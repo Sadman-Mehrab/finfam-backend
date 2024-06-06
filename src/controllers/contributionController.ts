@@ -1,8 +1,6 @@
 import express, { NextFunction, Request, Response } from "express";
 import { startSession } from 'mongoose';
-import { ContributionModel } from "../models/contributionModel";
-import { UserModel } from "../models/userModel";
-import { GoalModel } from "../models/goalModel";
+import { ContributionModel, UserModel, GoalModel } from "../models/";
 
 export const createContribution = async (req: Request, res: Response) => {
   // @ts-ignore
